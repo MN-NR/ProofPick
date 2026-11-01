@@ -25,7 +25,8 @@ COOKIE = "pp_session"
 MAX_RUNS_PER_SESSION = 10
 MAX_PARSES_PER_SESSION = 30
 PROVIDER_NOTICE = {
-    "providers": ["YouCam (Perfect Corp) creates the try-on", "Anthropic inspects the preview image"],
+    "providers": ["YouCam (Perfect Corp) creates the try-on",
+                  "Google Gemini inspects the preview image (on Gemini's free tier, Google may use it to improve its products)"],
     "retention": ("YouCam documents keeping uploaded and generated files for 30 days. Deleting your session removes "
                   "ProofPick's copies right away, but does not delete copies held by those providers."),
 }
@@ -37,7 +38,7 @@ def build_app(settings: Settings | None = None, *, youcam: YouCamClient | None =
     store = Store(settings.var_dir)
     catalog = Catalog.load(settings.catalog_path, settings.catalog_images_dir)
     youcam = youcam or YouCamClient(settings.youcam_api_key, settings.youcam_base_url)
-    model = model or ModelClient(settings.anthropic_api_key, settings.model)
+    model = model or ModelClient(settings.gemini_api_key, settings.model)
     pipeline = Pipeline(store, catalog, youcam, model, settings)
     parse_counts: dict[str, int] = {}
 
