@@ -237,6 +237,8 @@ class Pipeline:
             raise RetryNotAllowed("That preview was not attempted because of the session limit.")
         if latest["status"] == "done" and (latest["inspection"] or {}).get("status") == PreviewStatus.NO_MISMATCH.value:
             raise RetryNotAllowed("No visible mismatch was detected, so no retry is needed.")
+        if latest["status"] == "done" and (latest["inspection"] or {}).get("method") == "unavailable":
+            raise RetryNotAllowed("The preview was not inspected, and a new preview would not change that.")
         job_id = self.store.create_job(run["id"], run["session_id"], product_id, latest["attempt"] + 1)
         self.store.update_run(run["id"], state="previewing")
         return job_id

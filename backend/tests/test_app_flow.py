@@ -136,6 +136,16 @@ def test_one_retry_per_session(env):
     assert client.post(f"/api/runs/{run_id}/retry-preview", json={"product_id": other}).status_code == 409
 
 
+def test_uninspected_preview_does_not_spend_the_retry(env):
+    client, app, _ = env
+    run_id = start(client, upload(client))
+    drain(app)
+    report = client.get(f"/api/runs/{run_id}").json()
+    pid = report["recommendations"][0]["product_id"]
+    assert client.post(f"/api/runs/{run_id}/retry-preview", json={"product_id": pid}).status_code == 409
+    assert client.get(f"/api/runs/{run_id}").json()["retries_remaining"] == 1
+
+
 def test_session_preview_limit_is_enforced_across_runs(env):
     client, app, youcam = env
     photo = upload(client)

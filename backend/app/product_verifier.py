@@ -108,15 +108,15 @@ def check_price(product: Product, req: Requirements) -> Check:
     price = Decimal(str(product.price))
     ids = [e.id for e in product.evidence_for("price")]
     observed = f"{price:.2f} {product.currency}"
-    bound = f"${limit:.2f} {'or less' if req.price_inclusive else 'limit (exclusive)'}, before shipping and tax"
+    bound = f"${limit:.2f}{' or less' if req.price_inclusive else ''}, before shipping and tax"
     base = dict(product_id=product.id, requirement="budget", observed=observed, evidence_ids=ids, method=Method.PRICE_RULE)
     if product.currency != "USD":
         return Check(**base, status=ProductStatus.INSUFFICIENT, action="seek_or_disclose",
                      explanation=f"Listed in {product.currency}; ProofPick does not estimate exchange rates.")
     within = price <= limit if req.price_inclusive else price < limit
     if within:
-        return Check(**base, status=ProductStatus.MEETS, action="keep", explanation=f"Within {bound}.")
-    return Check(**base, status=ProductStatus.CONFLICT, action="exclude", explanation=f"Over {bound}.")
+        return Check(**base, status=ProductStatus.MEETS, action="keep", explanation=f"{'Within' if req.price_inclusive else 'Under'} {bound}.")
+    return Check(**base, status=ProductStatus.CONFLICT, action="exclude", explanation=f"Does not meet the limit of {bound}.")
 
 
 def extract_attribute(text: str, patterns: list[tuple[str, str]]) -> str | None:

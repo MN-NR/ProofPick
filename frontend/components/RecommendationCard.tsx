@@ -31,7 +31,7 @@ function PreviewBlock({ card, hasPhoto, retriesRemaining, retrying, onRetry, onO
   const shown = latest.image_url ? latest : card.previews.findLast((p) => p.image_url);
   const inProgress = ["pending", "running", "inspecting"].includes(latest.status);
   const canRetry = retriesRemaining > 0 && !inProgress && latest.status !== "skipped"
-    && latest.inspection?.status !== "no_visible_mismatch_detected";
+    && latest.inspection?.status !== "no_visible_mismatch_detected" && latest.inspection?.method !== "unavailable";
   return (
     <div className="space-y-2">
       {inProgress && <p className="rounded-md bg-paper p-3 text-sm" role="status">{latest.status === "inspecting" ? "Inspecting your preview…" : "Creating your preview…"}</p>}
