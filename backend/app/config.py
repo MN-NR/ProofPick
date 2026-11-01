@@ -15,9 +15,9 @@ class Settings(BaseSettings):
 
     youcam_api_key: str = ""
     youcam_base_url: str = "https://yce-api-01.makeupar.com"
-    anthropic_api_key: str = ""
+    gemini_api_key: str = ""
 
-    model: str = Field(default="claude-opus-5-5", alias="PROOFPICK_MODEL")
+    model: str = Field(default="gemini-3.6-flash", alias="PROOFPICK_MODEL")
     max_previews_per_session: int = Field(default=3, alias="PROOFPICK_MAX_PREVIEWS_PER_SESSION")
     max_retries_per_session: int = Field(default=1, alias="PROOFPICK_MAX_RETRIES_PER_SESSION")
     max_tasks_per_day: int = Field(default=30, alias="PROOFPICK_MAX_TASKS_PER_DAY")

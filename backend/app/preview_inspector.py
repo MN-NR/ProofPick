@@ -44,7 +44,7 @@ def summarize(features: list[FeatureObservation]) -> str:
 
 
 async def inspect_preview(original: Path, preview: Path, model: ModelClient) -> PreviewInspection:
-    content = [image_block(original), image_block(preview), {"type": "text", "text": "Compare the garment in these two images."}]
+    content = [image_block(original), image_block(preview), "Compare the garment in these two images."]
     try:
         parsed = await model.structured(SYSTEM, content, _ModelInspection)
     except ModelUnavailable as exc:
@@ -55,7 +55,7 @@ async def inspect_preview(original: Path, preview: Path, model: ModelClient) -> 
 async def assess_attribute(product: Product, field: str, wanted: str, original: Path, model: ModelClient) -> Check | None:
     """Fills a gap in the product text from the original photo. Returns None if it stays unknown."""
     allowed = {"sleeves": "long, three_quarter, short or sleeveless", "neckline": "high, crew, v_neck, scoop, boat or collared"}[field]
-    content = [image_block(original), {"type": "text", "text": f"What is this garment's {field}? Use one of: {allowed}, or not_visible."}]
+    content = [image_block(original), f"What is this garment's {field}? Use one of: {allowed}, or not_visible."]
     try:
         parsed = await model.structured(VISUAL_SYSTEM, content, _Attribute, effort="low")
     except ModelUnavailable:
