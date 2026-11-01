@@ -1,27 +1,160 @@
 @import "tailwindcss";
 
+/* "Atelier": beige linen, wine thread. `brand` is the wine red; `paper`/`sand` are the beige grounds; `card` is cream. */
 @theme {
-  --color-paper: #f6f3ec;
-  --color-card: #fffdf8;
-  --color-ink: #1d1f1c;
-  --color-muted: #63665e;
-  --color-line: #dcd7ca;
-  --color-brand: #1f4b3f;
-  --color-ok: #1d6b4a;
-  --color-ok-bg: #e2f1e8;
-  --color-bad: #a4342a;
-  --color-bad-bg: #f8e4e0;
+  --color-paper: #f3ebdf;
+  --color-sand: #e8dcc8;
+  --color-card: #fffaf2;
+  --color-ink: #2a1619;
+  --color-muted: #6d5752;
+  --color-line: #e0d0b9;
+  --color-line-strong: #cdb796;
+  --color-brand: #7a1f2b;
+  --color-brand-deep: #571521;
+  --color-brand-soft: #f2dfdc;
+  --color-gold: #b08d57;
+  --color-ok: #2f6b4f;
+  --color-ok-bg: #e3eee3;
+  --color-bad: #b42318;
+  --color-bad-bg: #fbe6e1;
   --color-warn: #8a5a00;
-  --color-warn-bg: #f8eccd;
-  --font-display: Georgia, "Times New Roman", serif;
+  --color-warn-bg: #f7eac9;
+
+  --shadow-card: 0 1px 2px rgb(74 32 36 / 0.06), 0 12px 28px -16px rgb(74 32 36 / 0.3);
+  --shadow-lift: 0 2px 4px rgb(74 32 36 / 0.07), 0 26px 46px -20px rgb(74 32 36 / 0.4);
+  --shadow-brand: 0 1px 2px rgb(87 21 33 / 0.3), 0 10px 22px -10px rgb(122 31 43 / 0.6);
+
+  --animate-rise: rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  --animate-sheet: sheet 0.4s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  --animate-fade: fade 0.25s ease-out both;
+  --animate-ribbon: ribbon 38s linear infinite;
+  --animate-sway: sway 4s ease-in-out infinite;
+  --animate-shimmer: shimmer 1.8s linear infinite;
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes sheet {
+    from { opacity: 0.3; transform: translateX(40px); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes ribbon {
+    to { transform: translateX(-50%); }
+  }
+  @keyframes sway {
+    0%, 100% { transform: rotate(-1.5deg); }
+    50% { transform: rotate(1.5deg); }
+  }
+  @keyframes shimmer {
+    from { background-position: 200% 0; }
+    to { background-position: -200% 0; }
+  }
 }
 
-body {
-  background: var(--color-paper);
-  color: var(--color-ink);
+/* next/font sets these variables on <html>; inline so utilities resolve them there. */
+@theme inline {
+  --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-serif), Georgia, "Times New Roman", serif;
+  --font-mono: var(--font-label), ui-monospace, "Cascadia Mono", monospace;
 }
 
-:focus-visible {
-  outline: 2px solid var(--color-brand);
-  outline-offset: 2px;
+/* A sewn seam just inside the edge of a container. Not for focusable elements: focus rings use outline too. */
+@utility stitch {
+  outline: 1.5px dashed rgb(122 31 43 / 0.35);
+  outline-offset: -7px;
+}
+
+@utility stitch-light {
+  outline: 1.5px dashed rgb(255 250 242 / 0.55);
+  outline-offset: -5px;
+}
+
+/* Pinking-shear edge on top and bottom, like a cut fabric swatch. */
+@utility pinked {
+  mask:
+    conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) top / 10px 51% repeat-x,
+    conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / 10px 51% repeat-x;
+}
+
+/* Lined paper, for the order slip. Pair with a matching line-height. */
+@utility ruled {
+  background-image: repeating-linear-gradient(to bottom, transparent 0 calc(2.25rem - 1px), var(--color-line) calc(2.25rem - 1px) 2.25rem);
+  background-attachment: local;
+}
+
+/* Tape-measure ticks: a long tick every 5th mark. */
+@utility tape {
+  background-color: var(--color-card);
+  background-image:
+    repeating-linear-gradient(to right, rgb(122 31 43 / 0.55) 0 1px, transparent 1px 40px),
+    repeating-linear-gradient(to right, rgb(122 31 43 / 0.3) 0 1px, transparent 1px 8px);
+  background-size: 100% 55%, 100% 30%;
+  background-repeat: no-repeat;
+}
+
+/* Loading placeholder: a soft light passing over sand. */
+@utility skeleton {
+  background-image: linear-gradient(100deg, var(--color-sand) 30%, var(--color-card) 50%, var(--color-sand) 70%);
+  background-size: 200% 100%;
+  animation: var(--animate-shimmer);
+}
+
+/* A light sweep across a button on hover, like light catching satin. */
+@utility shine {
+  position: relative;
+  overflow: hidden;
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(105deg, transparent 35%, rgb(255 250 242 / 0.35) 50%, transparent 65%);
+    transform: translateX(-120%);
+    transition: transform 0.8s ease;
+  }
+  &:hover::after {
+    transform: translateX(120%);
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    background-image:
+      radial-gradient(1000px 500px at 90% -10%, rgb(122 31 43 / 0.08), transparent 60%),
+      repeating-linear-gradient(0deg, rgb(87 21 33 / 0.022) 0 1px, transparent 1px 4px),
+      repeating-linear-gradient(90deg, rgb(87 21 33 / 0.022) 0 1px, transparent 1px 4px);
+    color: var(--color-ink);
+    accent-color: var(--color-brand);
+  }
+
+  ::selection {
+    background: var(--color-brand);
+    color: var(--color-card);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
