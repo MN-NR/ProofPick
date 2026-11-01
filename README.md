@@ -40,7 +40,7 @@ Task and file IDs are saved in SQLite, so a restart resumes an existing task ins
 You need Python 3.11+ and Node 20+.
 
 ```bash
-cp .env.example .env      # add YOUCAM_API_KEY and ANTHROPIC_API_KEY
+cp .env.example .env      # add YOUCAM_API_KEY and GEMINI_API_KEY
 
 cd backend
 python3 -m venv .venv
@@ -58,7 +58,9 @@ Without keys the app still runs and says what is unavailable:
 | Missing | Behavior |
 |---|---|
 | `YOUCAM_API_KEY` | Previews show as unavailable. No image is faked. |
-| `ANTHROPIC_API_KEY` | Parsing and ranking use labeled basic rules. Previews show "Could not be checked". |
+| `GEMINI_API_KEY` | Parsing and ranking use labeled basic rules. Previews show "Could not be checked". |
+
+The model is Google Gemini, `gemini-3.6-flash` by default (set `PROOFPICK_MODEL` to change it). Get a key at Google AI Studio. On Gemini's free tier, Google may use submitted content, including preview images, to improve its products; use a paid key if that is not acceptable.
 
 To offer the sample model button, add a photo of a consenting adult at `backend/data/sample/model.jpg`.
 
